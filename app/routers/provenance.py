@@ -1,11 +1,16 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException  # type: ignore[import-not-found]
 
 from app import storage
-from app.schemas import ProvenanceRegisterRequest, ProvenanceVerifyRequest, ProvenanceResult
-from app.services.blockchain_service import check_provenance
 
+from app.schemas import (
+    ProvenanceRegisterRequest,
+    ProvenanceVerifyRequest,
+    ProvenanceResult,
+)
+
+from app.services.blockchain_service import check_provenance, contract, web3
 router = APIRouter()
 
 
@@ -17,6 +22,16 @@ async def register(req: ProvenanceRegisterRequest):
 
     timestamp = datetime.now(timezone.utc).isoformat()
     storage.register_provenance(req.content_id, req.creator, req.signature, timestamp)
+    tx_hash = contract.functions.registerContent(
+        req.content_id,
+        content["sha256"],
+        content.get("perceptual_hash") or "",
+        req.creator,
+        "",
+        "original"
+    ).transact({
+        "from": web3.eth.accounts[0]
+    })
 
     return {"content_id": req.content_id, "registered": True, "timestamp": timestamp}
 
