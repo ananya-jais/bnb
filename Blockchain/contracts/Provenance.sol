@@ -114,4 +114,39 @@ contract Provenance {
 
         return contents[contentId];
     }
+
+    function getProvenance(
+    string memory contentId
+) public view returns (Content[] memory) {
+
+    require(
+        bytes(contents[contentId].contentId).length != 0,
+        "Content not found"
+    );
+
+    // Count how many versions are in the chain
+    uint256 count = 1;
+    string memory currentId = contentId;
+
+    while (bytes(contents[currentId].parentId).length != 0) {
+        currentId = contents[currentId].parentId;
+        count++;
+    }
+
+    // Create an array large enough for the whole chain
+    Content[] memory history = new Content[](count);
+
+    // Fill the array from original -> current
+    currentId = contentId;
+    uint256 index = count;
+
+    while (bytes(currentId).length != 0) {
+        index--;
+        history[index] = contents[currentId];
+        currentId = contents[currentId].parentId;
+    }
+
+    return history;
 }
+}
+
