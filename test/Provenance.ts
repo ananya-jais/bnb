@@ -157,3 +157,20 @@ test("should return the complete provenance chain", async () => {
   assert.equal(history[2].parentId, "IMG-002");
   assert.equal(history[2].editType, "AI enhancement");
 });
+
+test("should reject an invalid parent content", async () => {
+  const { viem } = await hre.network.connect();
+
+  const provenance = await viem.deployContract("Provenance");
+
+  await assert.rejects(
+    provenance.write.registerContent([
+      "IMG-INVALID",
+      "sha256-invalid",
+      "phash-invalid",
+      "user123",
+      "DOES-NOT-EXIST",
+      "crop"
+    ])
+  );
+});

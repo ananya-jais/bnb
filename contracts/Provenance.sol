@@ -36,6 +36,12 @@ contract Provenance {
             "Content already exists"
         );
 
+        require(
+            bytes(parentId).length == 0 ||
+            bytes(contents[parentId].contentId).length != 0,
+            "Parent content not found"
+        );
+
         contents[contentId] = Content(
             contentId,
             sha256Hash,
