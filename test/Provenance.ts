@@ -174,3 +174,69 @@ test("should reject an invalid parent content", async () => {
     ])
   );
 });
+
+test("should reject duplicate content registration", async () => {
+  const { viem } = await hre.network.connect();
+
+  const provenance = await viem.deployContract("Provenance");
+
+  // Register content once
+  await provenance.write.registerContent([
+    "DUP-001",
+    "sha256-original",
+    "phash-original",
+    "user123",
+    "",
+    "original"
+  ]);
+
+  // Try registering the same content ID again
+  await assert.rejects(
+    provenance.write.registerContent([
+      "DUP-001",
+      "sha256-different",
+      "phash-different",
+      "user456",
+      "",
+      "original"
+    ])
+  );
+});
+
+test("should reject duplicate content ID during edit", async () => {
+  const { viem } = await hre.network.connect();
+
+  const provenance = await viem.deployContract("Provenance");
+
+  // Register original content
+  await provenance.write.registerContent([
+    "EDIT-001",
+    "sha256-original",
+    "phash-original",
+    "user123",
+    "",
+    "original"
+  ]);
+
+  // Add first edit
+  await provenance.write.addEdit([
+    "EDIT-002",
+    "sha256-edit",
+    "phash-edit",
+    "user123",
+    "EDIT-001",
+    "crop"
+  ]);
+
+  // Try to create another record with the same content ID
+  await assert.rejects(
+    provenance.write.addEdit([
+      "EDIT-002",
+      "sha256-different",
+      "phash-different",
+      "user456",
+      "EDIT-001",
+      "AI enhancement"
+    ])
+  );
+});
