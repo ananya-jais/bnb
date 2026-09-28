@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 uploaded_media/
 veritrace.db
+node_modules

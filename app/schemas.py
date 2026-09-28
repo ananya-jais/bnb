@@ -65,3 +65,9 @@ class FinalResult(BaseModel):
 
 class AnalyzeRequest(BaseModel):
     content_id: str
+
+class ProvenanceEditRequest(BaseModel):
+    content_id: str
+    parent_id: str
+    creator: str
+    edit_type: str

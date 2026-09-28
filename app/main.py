@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import upload, analyze, provenance, result
 from app.db import init_db
 
-app = FastAPI(title="VeriTrace API", version="0.1.0")
+app = FastAPI(title="ASTITVA API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,3 +27,13 @@ def on_startup():
 @app.get("/")
 async def root():
     return {"status": "VeriTrace backend running"}
+
+from app.services import blockchain_service
+
+@app.get("/health")
+async def health():
+    return {
+        "backend": "ok",
+        "chain_up": blockchain_service.is_chain_up(),
+        "contract_deployed": blockchain_service.contract_deployed(),
+    }

@@ -1,0 +1,245 @@
+[
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "contentId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "creatorId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "parentId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "editType",
+          "type": "string"
+        }
+      ],
+      "name": "ContentRegistered",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "contentId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "sha256Hash",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "perceptualHash",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "creatorId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "parentId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "editType",
+          "type": "string"
+        }
+      ],
+      "name": "addEdit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "contentId",
+          "type": "string"
+        }
+      ],
+      "name": "getContent",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "contentId",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "sha256Hash",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "perceptualHash",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "creatorId",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "parentId",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "editType",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct Provenance.Content",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "contentId",
+          "type": "string"
+        }
+      ],
+      "name": "getProvenance",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "contentId",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "sha256Hash",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "perceptualHash",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "creatorId",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "parentId",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "editType",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct Provenance.Content[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "contentId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "sha256Hash",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "perceptualHash",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "creatorId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "parentId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "editType",
+          "type": "string"
+        }
+      ],
+      "name": "registerContent",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "contentId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "sha256Hash",
+          "type": "string"
+        }
+      ],
+      "name": "verifyContent",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
