@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriTrace — Verify Media</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #081018;
+            color: #f5f7fa;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            border-bottom: 1px solid #1c2933;
+            background: #081018;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #42d6c4, #7775ed);
+            color: #071017;
+            font-size: 23px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: #4fd5c5;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            color: #aebbc9;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ================= MAIN ================= */
+
+        .verify-page {
+            min-height: calc(100vh - 80px);
+            padding: 70px 7%;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+        }
+
+        .eyebrow {
+            color: #4fd5c5;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 52px;
+            margin-bottom: 18px;
+            letter-spacing: -2px;
+        }
+
+        .description {
+            color: #9ba9b8;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 650px;
+            margin-bottom: 40px;
+        }
+
+        /* ================= UPLOAD BOX ================= */
+
+        .upload-box {
+            border: 1px dashed #40515f;
+            border-radius: 22px;
+            min-height: 330px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #101a24;
+            padding: 40px;
+            transition: 0.2s ease;
+        }
+
+        .upload-box:hover {
+            border-color: #4fd5c5;
+        }
+
+        .upload-content {
+            width: 100%;
+        }
+
+        .upload-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 22px;
+            border-radius: 18px;
+            background: #192a38;
+            border: 1px solid #286c70;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #4fd5c5;
+        }
+
+        .upload-box h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #8494a4;
+            margin-bottom: 25px;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .primary {
+            border: none;
+            padding: 15px 25px;
+            border-radius: 99px;
+            background: #43d6c4;
+            color: #071017;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .primary:hover {
+            opacity: 0.9;
+        }
+
+        /* ================= FILE NAME ================= */
+
+        #selectedFile {
+            color: #4fd5c5;
+            margin-top: 18px;
+            min-height: 20px;
+        }
+
+        /* ================= ANALYZE BUTTON ================= */
+
+        #analyzeButton {
+            display: none;
+            margin: 25px auto 0;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 9px;
+            background: #43d6c4;
+            color: #071017;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #analyzeButton:hover {
+            opacity: 0.9;
+        }
+
+        /* ================= WHAT WE CHECK ================= */
+
+        .checks {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .feature-box {
+            padding: 20px;
+            border: 1px solid #263542;
+            background: #0d151e;
+            border-radius: 15px;
+        }
+
+        .feature-number {
+            color: #4fd5c5;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .feature-box h3 {
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .feature-box p {
+            color: #8393a3;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+            nav ul {
+                display: none;
+            }
+
+            .verify-page {
+                padding: 50px 6%;
+            }
+
+            h1 {
+                font-size: 45px;
+            }
+
+            .checks {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVIGATION ================= -->
+    <nav>
+        <div class="logo">
+            <div class="logo-box">V</div>
+            Veri<span>Trace</span>
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="verify.html">Verify</a></li>
+            <li><a href="provenance.html">Provenance</a></li>
+        </ul>
+    </nav>
+
+    <!-- ================= VERIFY PAGE ================= -->
+    <main class="verify-page">
+        <div class="container">
+            <div class="eyebrow">MEDIA VERIFICATION</div>
+            <h1>Verify your media.</h1>
+            <p class="description">
+                Upload an image, video, or audio file and VeriTrace will analyze it for synthetic manipulation and verify its provenance.
+            </p>
+
+            <!-- ================= UPLOAD BOX ================= -->
+            <div class="upload-box" id="uploadBox">
+                <div class="upload-content">
+                    <div class="upload-icon">↑</div>
+                    <h2>Drop your media here</h2>
+                    <p class="upload-text">or select a file from your device</p>
+
+                    <!-- Hidden file input -->
+                    <input type="file" id="mediaInput" accept="image/*,video/*,audio/*" style="display:none;">
+
+                    <!-- Choose file -->
+                    <button class="primary" id="chooseFileButton" type="button">
+                        Choose File
+                    </button>
+
+                    <!-- Selected filename -->
+                    <p id="selectedFile"></p>
+                </div>
+            </div>
+
+            <!-- ================= ANALYZE BUTTON ================= -->
+            <button id="analyzeButton" type="button">
+                Analyze Media →
+            </button>
+
+            <!-- ================= WHAT WE CHECK ================= -->
+            <div class="checks">
+                <div class="feature-box">
+                    <div class="feature-number">01</div>
+                    <h3>AI Detection</h3>
+                    <p>Detect synthetic and manipulated content.</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-number">02</div>
+                    <h3>Provenance</h3>
+                    <p>Trace the origin and available history.</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-number">03</div>
+                    <h3>Final Verdict</h3>
+                    <p>Combine the available evidence.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        const BASE = ""; // Same origin as FastAPI backend
+
+        const mediaInput = document.getElementById("mediaInput");
+        const chooseFileButton = document.getElementById("chooseFileButton");
+        const selectedFile = document.getElementById("selectedFile");
+        const analyzeButton = document.getElementById("analyzeButton");
+        const uploadBox = document.getElementById("uploadBox");
+
+        let currentFile = null;
+
+        // Result panel container placed immediately below the Analyze button for status/error updates
+        const panel = document.createElement("div");
+        panel.style.cssText = "margin-top:25px";
+        analyzeButton.insertAdjacentElement("afterend", panel);
+
+        const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c =>
+            ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+        function card(html) {
+            return `<div style="background:#101a24;border:1px solid #263542;border-radius:15px;padding:20px;margin-top:12px">${html}</div>`;
+        }
+
+        async function errText(res) {
+            try {
+                const j = await res.json();
+                return typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail);
+            } catch { return res.statusText; }
+        }
+
+        async function verifyMedia(file) {
+            const form = new FormData();
+            form.append("file", file);
+            const up = await fetch(`${BASE}/upload`, { method: "POST", body: form });
+            if (!up.ok) throw new Error(await errText(up));
+            const { content_id } = await up.json();
+
+            const an = await fetch(`${BASE}/analyze`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content_id })
+            });
+            if (!an.ok) throw new Error(await errText(an));
+            const result = await an.json();
+
+            return { content_id, result };
+        }
+
+        function setFile(file) {
+            if (!file) return;
+            currentFile = file;
+            selectedFile.textContent = "Selected: " + file.name;
+            analyzeButton.style.display = "block";
+            panel.innerHTML = "";
+        }
+
+        /* ===== CHOOSE FILE ===== */
+        chooseFileButton.addEventListener("click", () => mediaInput.click());
+        mediaInput.addEventListener("change", function () { setFile(this.files[0]); });
+
+        /* ===== DRAG & DROP ===== */
+        ["dragover", "dragenter"].forEach(ev =>
+            uploadBox.addEventListener(ev, e => { e.preventDefault(); uploadBox.style.borderColor = "#4fd5c5"; }));
+        ["dragleave", "drop"].forEach(ev =>
+            uploadBox.addEventListener(ev, e => { e.preventDefault(); uploadBox.style.borderColor = ""; }));
+        uploadBox.addEventListener("drop", e => setFile(e.dataTransfer.files[0]));
+
+        /* ===== ANALYZE ===== */
+        analyzeButton.addEventListener("click", async function () {
+            if (!currentFile) return;
+            analyzeButton.disabled = true;
+            analyzeButton.textContent = "Analyzing...";
+            panel.innerHTML = card(`Analyzing <b>${esc(currentFile.name)}</b>...`);
+
+            try {
+                const { content_id, result } = await verifyMedia(currentFile);
+                
+                // Redirect to result.html with the returned parameters
+                window.location.href = 
+                    `result.html?content_id=${encodeURIComponent(content_id)}&analysis_id=${encodeURIComponent(result.analysis_id || content_id)}`;
+            } catch (e) {
+                panel.innerHTML = card(`<span style="color:#ff5c6c">Error: ${esc(e.message)}</span>`);
+                analyzeButton.disabled = false;
+                analyzeButton.textContent = "Analyze Media →";
+            }
+        });
+    </script>
+</body>
+
+</html>

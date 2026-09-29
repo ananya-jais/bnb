@@ -1,13 +1,15 @@
 """
-SQLite-backed store. Function signatures are identical to the old
-in-memory version — routers and services don't need any changes.
+SQLite-backed store. All functions read/write veritrace.db via
+app.db.get_conn() — nothing here is in-memory, so data survives
+restarts and is shared correctly between uvicorn and standalone
+scripts like seed_demo.py.
 """
 
 from typing import Optional
 import uuid
 import json
 
-from app.db import get_conn
+from app.db import get_conn, init_db  # noqa: F401  (init_db re-exported for convenience)
 
 
 def new_id(prefix: str) -> str:
@@ -29,6 +31,17 @@ def get_content(content_id: str) -> Optional[dict]:
     with get_conn() as conn:
         row = conn.execute("SELECT * FROM content WHERE content_id = ?", (content_id,)).fetchone()
         return dict(row) if row else None
+
+
+def get_file_path(content_id: str) -> Optional[str]:
+    record = get_content(content_id)
+    return record.get("filepath") if record else None
+
+
+def find_content_ids_by_sha256(sha256: str) -> list:
+    with get_conn() as conn:
+        rows = conn.execute("SELECT content_id FROM content WHERE sha256 = ?", (sha256,)).fetchall()
+        return [r["content_id"] for r in rows]
 
 
 # ---- analysis ----
@@ -85,3 +98,10 @@ def link_edit(child_content_id: str, parent_content_id: str, edit_type: str):
             (child_content_id, json.dumps(chain))
         )
         conn.commit()
+
+def get_all_content_with_phash(exclude_id: str = None) -> list:
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT content_id, perceptual_hash FROM content WHERE perceptual_hash IS NOT NULL"
+        ).fetchall()
+        return [dict(r) for r in rows if r["content_id"] != exclude_id]

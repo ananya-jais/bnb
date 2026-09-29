@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriTrace — Analysis</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #081018;
+            color: #f5f7fa;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            border-bottom: 1px solid #1c2933;
+            background: #081018;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #42d6c4, #7775ed);
+            color: #071017;
+            font-size: 23px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: #4fd5c5;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            color: #aebbc9;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #ffffff;
+        }
+
+        /* ================= MAIN ================= */
+
+        .analysis-page {
+            min-height: calc(100vh - 80px);
+            padding: 70px 7%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 30px;
+            margin-bottom: 45px;
+        }
+
+        .eyebrow {
+            color: #4fd5c5;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 52px;
+            margin-bottom: 18px;
+            letter-spacing: -2px;
+        }
+
+        .description {
+            color: #9ba9b8;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 650px;
+        }
+
+        .status {
+            padding: 10px 14px;
+            border: 1px solid #33424f;
+            border-radius: 8px;
+            color: #4fd5c5;
+            font-size: 12px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        /* ================= PIPELINE ================= */
+
+        .analysis-pipeline {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .analysis-step {
+            padding: 18px;
+            min-height: 95px;
+            border: 1px solid #263644;
+            border-radius: 12px;
+            background: #101a24;
+            transition: all 0.3s ease;
+        }
+
+        .analysis-step small {
+            display: block;
+            color: #71808f;
+            font-size: 10px;
+            margin-bottom: 9px;
+        }
+
+        .analysis-step strong {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .analysis-step span {
+            color: #71808f;
+            font-size: 11px;
+        }
+
+        .analysis-step.completed {
+            border-color: #315954;
+        }
+
+        .analysis-step.current {
+            border-color: #4fd5c5;
+            box-shadow: 0 0 22px rgba(79, 213, 197, 0.08);
+        }
+
+        /* ================= ANALYSIS CARDS ================= */
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .analysis-card {
+            padding: 30px;
+            background: #101a24;
+            border: 1px solid #263644;
+            border-radius: 18px;
+        }
+
+        .analysis-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .analysis-label {
+            color: #4fd5c5;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .analysis-label.purple {
+            color: #8c83e8;
+        }
+
+        .analysis-card h2 {
+            font-size: 22px;
+            margin-top: 7px;
+        }
+
+        .engine-badge {
+            padding: 6px 9px;
+            border: 1px solid #33424f;
+            border-radius: 6px;
+            color: #9ba9b8;
+            font-size: 9px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        /* ================= ANALYSIS ITEMS ================= */
+
+        .analysis-item {
+            padding: 18px 0;
+            border-top: 1px solid #24323e;
+        }
+
+        .analysis-item-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .running {
+            color: #4fd5c5;
+            font-size: 11px;
+        }
+
+        .waiting {
+            color: #8494a4;
+            font-size: 11px;
+        }
+
+        .completed-text {
+            color: #315954;
+            font-size: 11px;
+        }
+
+        .analysis-item small {
+            color: #7f8d9b;
+            font-size: 11px;
+        }
+
+        /* ================= PROGRESS ================= */
+
+        .progress-track {
+            height: 5px;
+            background: #26313b;
+            border-radius: 20px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 20px;
+            background: #4fd5c5;
+            animation: analysisLoading 2s infinite alternate ease-in-out;
+        }
+
+        .progress-fill.purple {
+            background: #8c83e8;
+        }
+
+        .fill-1 { width: 78%; }
+        .fill-2 { width: 57%; animation-delay: .3s; }
+        .fill-3 { width: 38%; animation-delay: .6s; }
+
+        @keyframes analysisLoading {
+            from { opacity: 0.45; }
+            to { opacity: 1; }
+        }
+
+        /* ================= EVIDENCE ================= */
+
+        .evidence-status {
+            margin-top: 20px;
+            padding: 25px;
+            background: #0d151e;
+            border: 1px solid #263644;
+            border-radius: 16px;
+        }
+
+        .evidence-label {
+            color: #4fd5c5;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .evidence-status h3 {
+            font-size: 19px;
+            margin-bottom: 8px;
+        }
+
+        .evidence-status p {
+            color: #8393a3;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ================= RESULT BUTTON ================= */
+
+        #resultButton {
+            display: block;
+            margin: 25px auto 0;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 9px;
+            background: #2a3a47;
+            color: #071017;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+        }
+
+        #resultButton.active {
+            background: #43d6c4;
+            cursor: pointer;
+        }
+
+        #resultButton.active:hover {
+            opacity: 0.9;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+            nav ul {
+                display: none;
+            }
+
+            .analysis-page {
+                padding: 50px 6%;
+            }
+
+            .header {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 45px;
+            }
+
+            .analysis-pipeline {
+                grid-template-columns: 1fr;
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVIGATION ================= -->
+    <nav>
+        <div class="logo">
+            <div class="logo-box">V</div>
+            Veri<span>Trace</span>
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="verify.html" class="active">Verify</a></li>
+            <li><a href="provenance.html">Provenance</a></li>
+        </ul>
+    </nav>
+
+    <!-- ================= ANALYSIS PAGE ================= -->
+    <main class="analysis-page">
+        <div class="container">
+
+            <!-- HEADER -->
+            <div class="header">
+                <div>
+                    <div class="eyebrow">LIVE FORENSIC PIPELINE</div>
+                    <h1>Analyzing your media.</h1>
+                    <p class="description" id="statusDesc">
+                        VeriTrace is checking your media for synthetic manipulation, inconsistencies, and available provenance information.
+                    </p>
+                </div>
+                <div class="status" id="pipelineStatus">ANALYSIS ACTIVE</div>
+            </div>
+
+            <!-- ================= FIVE STEP PIPELINE ================= -->
+            <div class="analysis-pipeline">
+                <div class="analysis-step completed" id="step1">
+                    <small>01</small>
+                    <strong>INGEST</strong>
+                    <span>Media received</span>
+                </div>
+                <div class="analysis-step completed" id="step2">
+                    <small>02</small>
+                    <strong>PREPROCESS</strong>
+                    <span>Preparing frames</span>
+                </div>
+                <div class="analysis-step current" id="step3">
+                    <small>03</small>
+                    <strong>AI DETECTION</strong>
+                    <span>Checking signals</span>
+                </div>
+                <div class="analysis-step" id="step4">
+                    <small>04</small>
+                    <strong>PROVENANCE</strong>
+                    <span>Checking history</span>
+                </div>
+                <div class="analysis-step" id="step5">
+                    <small>05</small>
+                    <strong>FUSION</strong>
+                    <span>Combining evidence</span>
+                </div>
+            </div>
+
+            <!-- ================= TWO ANALYSIS CARDS ================= -->
+            <div class="analysis-grid">
+
+                <!-- AI DETECTION -->
+                <div class="analysis-card">
+                    <div class="analysis-card-header">
+                        <div>
+                            <div class="analysis-label">AI DETECTION</div>
+                            <h2>Deep forensic analysis</h2>
+                        </div>
+                        <span class="engine-badge">ENGINE V4.2</span>
+                    </div>
+
+                    <div class="analysis-item">
+                        <div class="analysis-item-top">
+                            <span>Facial frequency analysis</span>
+                            <span class="running" id="status-task-1">Running</span>
+                        </div>
+                        <small>Searching for synthetic patterns</small>
+                        <div class="progress-track">
+                            <div class="progress-fill fill-1" id="prog-1"></div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-item">
+                        <div class="analysis-item-top">
+                            <span>Temporal consistency</span>
+                            <span class="running" id="status-task-2">Running</span>
+                        </div>
+                        <small>Checking frame-to-frame variation</small>
+                        <div class="progress-track">
+                            <div class="progress-fill fill-2" id="prog-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-item">
+                        <div class="analysis-item-top">
+                            <span>Audio-visual correlation</span>
+                            <span class="running" id="status-task-3">Running</span>
+                        </div>
+                        <small>Comparing visual and audio signals</small>
+                        <div class="progress-track">
+                            <div class="progress-fill fill-3" id="prog-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROVENANCE -->
+                <div class="analysis-card">
+                    <div class="analysis-card-header">
+                        <div>
+                            <div class="analysis-label purple">PROVENANCE</div>
+                            <h2>Cryptographic verification</h2>
+                        </div>
+                        <span class="engine-badge">C2PA</span>
+                    </div>
+
+                    <div class="analysis-item">
+                        <div class="analysis-item-top">
+                            <span>Content fingerprint</span>
+                            <span class="running" id="status-task-4">Running</span>
+                        </div>
+                        <small>Generating media fingerprint</small>
+                        <div class="progress-track">
+                            <div class="progress-fill purple fill-1" id="prog-4"></div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-item">
+                        <div class="analysis-item-top">
+                            <span>Registry lookup</span>
+                            <span class="running" id="status-task-5">Running</span>
+                        </div>
+                        <small>Searching provenance records</small>
+                        <div class="progress-track">
+                            <div class="progress-fill purple fill-2" id="prog-5"></div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-item">
+                        <div class="analysis-item-top">
+                            <span>Cryptographic signature</span>
+                            <span class="waiting" id="status-task-6">Waiting</span>
+                        </div>
+                        <small>Verifying source signature</small>
+                        <div class="progress-track">
+                            <div class="progress-fill purple fill-3" id="prog-6"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================= EVIDENCE ================= -->
+            <div class="evidence-status">
+                <div class="evidence-label">EVIDENCE CONVERGENCE</div>
+                <h3 id="evidenceHeading">AI evidence and provenance are being combined.</h3>
+                <p id="evidenceText">
+                    The verification result will be generated after the available evidence has been evaluated.
+                </p>
+            </div>
+
+            <!-- ================= RESULT BUTTON ================= -->
+            <button id="resultButton" disabled>
+                Analyzing Media...
+            </button>
+
+        </div>
+    </main>
+
+    <!-- ================= JAVASCRIPT INTEGRATION ================= -->
+    <script>
+        const BASE = ""; // Same origin as FastAPI backend
+
+        // Read content_id from URL query params
+        const urlParams = new URLSearchParams(window.location.search);
+        const contentId = urlParams.get("content_id");
+
+        const resultButton = document.getElementById("resultButton");
+        const pipelineStatus = document.getElementById("pipelineStatus");
+        const statusDesc = document.getElementById("statusDesc");
+        const evidenceHeading = document.getElementById("evidenceHeading");
+        const evidenceText = document.getElementById("evidenceText");
+
+        const step3 = document.getElementById("step3");
+        const step4 = document.getElementById("step4");
+        const step5 = document.getElementById("step5");
+
+        async function processAnalysis() {
+            if (!contentId) {
+                pipelineStatus.textContent = "ERROR";
+                pipelineStatus.style.borderColor = "#ff5c6c";
+                pipelineStatus.style.color = "#ff5c6c";
+                statusDesc.textContent = "No Content ID provided. Please upload a file through the verify page first.";
+                resultButton.textContent = "Return to Verify";
+                resultButton.classList.add("active");
+                resultButton.disabled = false;
+                resultButton.onclick = () => window.location.href = "verify.html";
+                return;
+            }
+
+            try {
+                // Step 3 -> 4 progression visual updates
+                setTimeout(() => {
+                    step3.classList.remove("current");
+                    step3.classList.add("completed");
+                    step4.classList.add("current");
+                }, 1000);
+
+                // Execute backend request
+                const response = await fetch(`${BASE}/analyze`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ content_id: contentId })
+                });
+
+                if (!response.ok) {
+                    const errorJson = await response.json().catch(() => ({}));
+                    throw new Error(errorJson.detail || "Analysis failed on backend.");
+                }
+
+                const analysisData = await response.json();
+
+                // Step 4 -> 5 Fusion stage complete
+                step4.classList.remove("current");
+                step4.classList.add("completed");
+                step5.classList.add("completed");
+
+                // Update UI statuses to completed
+                pipelineStatus.textContent = "ANALYSIS COMPLETE";
+                pipelineStatus.style.borderColor = "#4fd5c5";
+
+                evidenceHeading.textContent = "Evidence evaluation completed.";
+                evidenceText.textContent = "All forensic checks and provenance lookups have converged. You may view the full report now.";
+
+                // Enable result navigation button
+                resultButton.disabled = false;
+                resultButton.classList.add("active");
+                resultButton.textContent = "View Verification Result →";
+                resultButton.onclick = () => {
+                    window.location.href = `result.html?content_id=${encodeURIComponent(contentId)}`;
+                };
+
+            } catch (err) {
+                console.error("Analysis Error:", err);
+                pipelineStatus.textContent = "FAILED";
+                pipelineStatus.style.borderColor = "#ff5c6c";
+                pipelineStatus.style.color = "#ff5c6c";
+                evidenceHeading.textContent = "Analysis encountered an error.";
+                evidenceText.textContent = err.message || "An unexpected error occurred during processing.";
+
+                resultButton.disabled = false;
+                resultButton.classList.add("active");
+                resultButton.style.background = "#ff5c6c";
+                resultButton.style.color = "#ffffff";
+                resultButton.textContent = "Retry Upload";
+                resultButton.onclick = () => window.location.href = "verify.html";
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", processAnalysis);
+    </script>
+</body>
+
+</html>

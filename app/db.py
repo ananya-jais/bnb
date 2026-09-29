@@ -1,8 +1,9 @@
 import sqlite3
 import json
 from contextlib import contextmanager
+from pathlib import Path
 
-DB_PATH = "veritrace.db"
+DB_PATH = str(Path(__file__).resolve().parent.parent / "veritrace.db")
 
 
 def init_db():

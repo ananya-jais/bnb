@@ -1,11 +1,6 @@
-"""
-Pydantic models = the shared contract between Ananya (backend),
-Kanchan (AI), and Vidhi (blockchain). Everyone should build to THESE
-shapes so integration on Day 3 doesn't turn into a field-name fight.
-"""
-
 from typing import List, Optional
 from pydantic import BaseModel, Field
+from typing import List, Optional, Dict
 
 
 # ---------- Upload ----------
@@ -22,10 +17,12 @@ class UploadResponse(BaseModel):
 
 class AIResult(BaseModel):
     synthetic_probability: float = Field(..., ge=0.0, le=1.0)
-    classification: str  # "authentic" | "synthetic" | "uncertain"
+    classification: str
     generation_family: Optional[str] = None
     confidence: float = Field(..., ge=0.0, le=1.0)
     evidence: List[str] = []
+    attribution_scores: Dict[str, float] = {}
+    forensics: Dict[str, float] = {}
 
 
 # ---------- Provenance output (Vidhi fills this in) ----------
@@ -54,20 +51,17 @@ class ProvenanceVerifyRequest(BaseModel):
 
 class FinalResult(BaseModel):
     analysis_id: str
-    status: str  # "VERIFIED_ORIGINAL" | "EDITED_PROVENANCE_VERIFIED" | "SUSPICIOUS_UNVERIFIED" | "UNCERTAIN"
+    status: str
     synthetic_probability: float
     generation_family: Optional[str] = None
     provenance_found: bool
     blockchain_verified: bool
     confidence: float
     evidence: List[str] = []
+    matched_content_id: Optional[str] = None
+    attribution_scores: Dict[str, float] = {}
+    forensics: Dict[str, float] = {}
 
 
 class AnalyzeRequest(BaseModel):
     content_id: str
-
-class ProvenanceEditRequest(BaseModel):
-    content_id: str
-    parent_id: str
-    creator: str
-    edit_type: str

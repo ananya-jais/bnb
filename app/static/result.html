@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriTrace — Verification Result</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #081018;
+            color: #f5f7fa;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            border-bottom: 1px solid #1c2933;
+            background: #081018;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #42d6c4, #7775ed);
+            color: #071017;
+            font-size: 23px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: #4fd5c5;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            color: #aebbc9;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ================= PAGE ================= */
+
+        .result-page {
+            min-height: calc(100vh - 80px);
+            padding: 70px 7%;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 9px 15px;
+            border: 1px solid #3b6661;
+            border-radius: 30px;
+            color: #4fd5c5;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 58px;
+            letter-spacing: -2px;
+            margin-bottom: 18px;
+        }
+
+        .header p {
+            max-width: 650px;
+            margin: auto;
+            color: #9ba9b8;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* ================= MAIN VERDICT ================= */
+
+        .result-main {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 25px;
+            padding: 32px;
+            background: #101a24;
+            border: 1px solid #315954;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .result-symbol {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #153530;
+            border: 1px solid #4fd5c5;
+            color: #4fd5c5;
+            font-size: 34px;
+            font-weight: bold;
+        }
+
+        .result-label {
+            color: #4fd5c5;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .result-content h2 {
+            font-size: 25px;
+            margin-bottom: 9px;
+        }
+
+        .result-content p {
+            color: #8796a5;
+            line-height: 1.5;
+            max-width: 650px;
+        }
+
+        /* ================= CONFIDENCE ================= */
+
+        .confidence {
+            text-align: center;
+            padding-left: 30px;
+            border-left: 1px solid #293844;
+        }
+
+        .confidence-number {
+            font-size: 38px;
+            font-weight: bold;
+            color: #4fd5c5;
+        }
+
+        .confidence-label {
+            color: #71808f;
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        /* ================= EVIDENCE GRID ================= */
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .result-card {
+            padding: 28px;
+            background: #101a24;
+            border: 1px solid #263644;
+            border-radius: 18px;
+        }
+
+        .result-card-label {
+            color: #4fd5c5;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .result-card-label.purple {
+            color: #8c83e8;
+        }
+
+        .result-card h3 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        /* ================= METRICS ================= */
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 15px 0;
+            border-top: 1px solid #24323e;
+            font-size: 13px;
+        }
+
+        .metric span {
+            color: #8997a5;
+        }
+
+        .metric strong {
+            color: #d8e0e7;
+            font-size: 12px;
+        }
+
+        .metric strong.positive {
+            color: #4fd5c5;
+        }
+
+        .metric strong.negative {
+            color: #ff5c6c;
+        }
+
+        .metric strong.warning {
+            color: #f5b942;
+        }
+
+        /* ================= EVIDENCE SUMMARY ================= */
+
+        .evidence-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 28px;
+            background: #101a24;
+            border: 1px solid #263644;
+            border-radius: 18px;
+        }
+
+        .summary-label {
+            color: #7f8d9b;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .evidence-summary h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .evidence-summary p {
+            color: #8494a4;
+            line-height: 1.6;
+        }
+
+        .evidence-list {
+            margin-top: 10px;
+            padding-left: 18px;
+            color: #aebbc9;
+            font-size: 13px;
+        }
+
+        .evidence-list li {
+            margin-bottom: 4px;
+        }
+
+        .summary-score {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .summary-score span {
+            font-size: 42px;
+            font-weight: bold;
+            color: #4fd5c5;
+        }
+
+        .summary-score small {
+            color: #71808f;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 25px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .primary {
+            border: none;
+            background: #43d6c4;
+            color: #071017;
+        }
+
+        .primary:hover {
+            opacity: 0.9;
+        }
+
+        .secondary {
+            background: transparent;
+            border: 1px solid #33424f;
+            color: #dce5ee;
+        }
+
+        .secondary:hover {
+            border-color: #4fd5c5;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+            nav ul {
+                display: none;
+            }
+
+            .result-page {
+                padding: 50px 6%;
+            }
+
+            .header h1 {
+                font-size: 45px;
+            }
+
+            .result-main {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .result-symbol {
+                margin: auto;
+            }
+
+            .confidence {
+                border-left: none;
+                border-top: 1px solid #293844;
+                padding-left: 0;
+                padding-top: 20px;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .evidence-summary {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVIGATION ================= -->
+    <nav>
+        <div class="logo">
+            <div class="logo-box">V</div>
+            Veri<span>Trace</span>
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="verify.html">Verify</a></li>
+            <li><a href="provenance.html">Provenance</a></li>
+        </ul>
+    </nav>
+
+    <!-- ================= RESULT PAGE ================= -->
+    <main class="result-page">
+        <div class="container">
+
+            <!-- HEADER -->
+            <div class="header">
+                <div class="badge" id="badgeText">VERIFICATION COMPLETE</div>
+                <h1>Analysis complete.</h1>
+                <p id="headerSubtext">
+                    VeriTrace combined AI analysis and provenance evidence to produce the following verification report.
+                </p>
+            </div>
+
+            <!-- ================= MAIN VERDICT ================= -->
+            <div class="result-main" id="resultMain">
+                <div class="result-symbol" id="resultSymbol">✓</div>
+
+                <div class="result-content">
+                    <div class="result-label" id="resultStatusLabel">VERITRACE ASSESSMENT</div>
+                    <h2 id="verdictTitle">Loading verdict...</h2>
+                    <p id="verdictDesc">Fetching analytical results from the pipeline...</p>
+                </div>
+
+                <div class="confidence">
+                    <div class="confidence-number" id="confidenceNumber">--%</div>
+                    <div class="confidence-label">CONFIDENCE</div>
+                </div>
+            </div>
+
+            <!-- ================= EVIDENCE GRID ================= -->
+            <div class="result-grid">
+
+                <!-- AI EVIDENCE -->
+                <div class="result-card">
+                    <div class="result-card-label">AI ANALYSIS</div>
+                    <h3>Synthetic-content signals</h3>
+
+                    <div class="metric">
+                        <span>Synthetic probability</span>
+                        <strong id="mSynthProb">--</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Generation family</span>
+                        <strong id="mGenFamily">--</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Analysis status</span>
+                        <strong id="mAnalysisStatus" class="positive">Evaluated</strong>
+                    </div>
+                </div>
+
+                <!-- PROVENANCE -->
+                <div class="result-card">
+                    <div class="result-card-label purple">PROVENANCE</div>
+                    <h3>Content history</h3>
+
+                    <div class="metric">
+                        <span>Blockchain verified</span>
+                        <strong id="mBlockchain">--</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Content ID</span>
+                        <strong id="mContentId">--</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Signature status</span>
+                        <strong id="mSignature" class="positive">--</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================= EVIDENCE SUMMARY ================= -->
+            <div class="evidence-summary">
+                <div>
+                    <div class="summary-label">EVIDENCE SUMMARY</div>
+                    <h3 id="evidenceSummaryTitle">Evaluated Evidence Flags</h3>
+                    <p id="evidenceSummaryText">Specific indicators generated during automated forensic checks:</p>
+                    <ul class="evidence-list" id="evidenceList">
+                        <li>Loading evidence points...</li>
+                    </ul>
+                </div>
+
+                <div class="summary-score">
+                    <span id="summaryScoreNum">--</span>
+                    <small>/100</small>
+                </div>
+            </div>
+
+            <!-- ================= ACTIONS ================= -->
+            <div class="actions">
+                <button class="primary" id="btnViewProvenance">
+                    View Provenance
+                </button>
+
+                <button class="secondary" onclick="window.location.href='verify.html'">
+                    Verify Another File
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ================= JAVASCRIPT INTEGRATION ================= -->
+    <script>
+        const BASE = ""; // Same origin as FastAPI backend
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const contentId = urlParams.get("content_id");
+
+        const STATUS_CONFIG = {
+            VERIFIED_ORIGINAL: {
+                symbol: "✓",
+                title: "Verified Original Media",
+                desc: "No significant synthetic manipulation detected, and provenance records match source metadata.",
+                color: "#4fd5c5",
+                bgColor: "#153530",
+                borderColor: "#315954"
+            },
+            LIKELY_AUTHENTIC_UNREGISTERED: {
+                symbol: "~",
+                title: "Likely Authentic — Not on Record",
+                desc: "No significant synthetic manipulation detected, but this content has no provenance record on chain.",
+                color: "#8fd6c4",
+                bgColor: "#122a26",
+                borderColor: "#2e5c52"
+            },
+
+            EDITED_PROVENANCE_VERIFIED: {
+                symbol: "✎",
+                title: "Edited — Provenance Verified",
+                desc: "Media has edits/transformations applied, but valid provenance tracking is available on chain.",
+                color: "#40d9c0",
+                bgColor: "#133132",
+                borderColor: "#286c70"
+            },
+            SUSPICIOUS_UNVERIFIED: {
+                symbol: "✕",
+                title: "Suspicious / Synthetic Signals Detected",
+                desc: "High probability of AI-generated content or deepfake artifacts without verified provenance.",
+                color: "#ff5c6c",
+                bgColor: "#38181c",
+                borderColor: "#6e2a32"
+            },
+            UNCERTAIN: {
+                symbol: "!",
+                title: "Uncertain Forensic Evaluation",
+                desc: "Inconclusive results from AI analysis with no cryptographically verified provenance record found.",
+                color: "#f5b942",
+                bgColor: "#362a15",
+                borderColor: "#695125"
+            }
+        };
+
+        const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c =>
+            ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+        const pct = (n) => typeof n === "number" ? Math.round(n * 100) : "--";
+
+        async function loadResult() {
+            const analysisId = urlParams.get("analysis_id");
+
+            if (!contentId && !analysisId) {
+                document.getElementById("verdictTitle").textContent = "No Content ID Provided";
+                document.getElementById("verdictDesc").textContent = "Please go back to the verify page and upload a file first.";
+                return;
+            }
+
+            try {
+                let result;
+                if (analysisId) {
+                    const r = await fetch(`${BASE}/result/${encodeURIComponent(analysisId)}`);
+                    if (!r.ok) throw new Error("Failed to load saved result.");
+                    result = await r.json();
+                } else {
+                    const r = await fetch(`${BASE}/analyze`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ content_id: contentId })
+                    });
+                    if (!r.ok) throw new Error("Failed to load analysis result.");
+                    result = await r.json();
+                }
+
+                const lookupId = result.matched_content_id || contentId;
+                let provenance = null;
+                try {
+                    if (lookupId) {
+                        const resPv = await fetch(`${BASE}/provenance/${encodeURIComponent(lookupId)}`);
+                        if (resPv.ok) provenance = await resPv.json();
+                    }
+                } catch (e) {}
+
+                renderResult(result, provenance, lookupId);
+            } catch (err) {
+                console.error(err);
+                document.getElementById("verdictTitle").textContent = "Error Loading Verification";
+                document.getElementById("verdictDesc").textContent = err.message || "An unexpected error occurred.";
+            }
+        }
+
+        function renderResult(result, provenance, activeContentId) {
+            const config = STATUS_CONFIG[result.status] || {
+                symbol: "?",
+                title: result.status || "Unknown Verdict",
+                desc: "Verification complete.",
+                color: "#9ba9b8",
+                bgColor: "#101a24",
+                borderColor: "#263644"
+            };
+
+            const displayId = activeContentId || result.matched_content_id || contentId || "Unknown";
+
+            // Main verdict banner styling
+            const mainBanner = document.getElementById("resultMain");
+            mainBanner.style.borderColor = config.borderColor;
+
+            const symbolElem = document.getElementById("resultSymbol");
+            symbolElem.textContent = config.symbol;
+            symbolElem.style.color = config.color;
+            symbolElem.style.borderColor = config.color;
+            symbolElem.style.backgroundColor = config.bgColor;
+
+            document.getElementById("verdictTitle").textContent = config.title;
+            document.getElementById("verdictDesc").textContent = config.desc;
+
+            // Confidence & Scores
+            const confPct = pct(result.confidence);
+            const confElem = document.getElementById("confidenceNumber");
+            confElem.textContent = confPct + "%";
+            confElem.style.color = config.color;
+
+            const synthPct = pct(result.synthetic_probability);
+            const scoreNum = Math.round(100 - (result.synthetic_probability * 100 || 0));
+            document.getElementById("summaryScoreNum").textContent = scoreNum;
+
+            // Metrics
+            const synthElem = document.getElementById("mSynthProb");
+            synthElem.textContent = synthPct + "%";
+            synthElem.className = result.synthetic_probability > 0.5 ? "negative" : "positive";
+
+            document.getElementById("mGenFamily").textContent = esc(result.generation_family || "None");
+
+            const isBcVerified = !!result.blockchain_verified;
+            const bcElem = document.getElementById("mBlockchain");
+            bcElem.textContent = isBcVerified ? "Yes" : "No";
+            bcElem.className = isBcVerified ? "positive" : "warning";
+
+            document.getElementById("mContentId").textContent = displayId.length > 12 ? displayId.substring(0, 12) + "..." : displayId;
+
+            const sigElem = document.getElementById("mSignature");
+            sigElem.textContent = isBcVerified ? "Valid C2PA" : "Unsigned";
+            sigElem.className = isBcVerified ? "positive" : "warning";
+
+            // Evidence list
+            const evidenceList = document.getElementById("evidenceList");
+            if (result.evidence && result.evidence.length > 0) {
+                evidenceList.innerHTML = result.evidence.map(e => `<li>${esc(e)}</li>`).join("");
+            } else {
+                evidenceList.innerHTML = `<li>No manipulation artifacts detected.</li>`;
+            }
+
+            // Action button routing
+            document.getElementById("btnViewProvenance").onclick = () => {
+                window.location.href = `provenance.html?content_id=${encodeURIComponent(displayId)}`;
+            };
+        }
+
+        window.addEventListener("DOMContentLoaded", loadResult);
+    </script>
+</body>
+
+</html>

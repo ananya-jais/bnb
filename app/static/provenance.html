@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriTrace — Provenance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #081018;
+            color: #f5f7fa;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            border-bottom: 1px solid #1c2933;
+            background: #081018;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #42d6c4, #7775ed);
+            color: #071017;
+            font-size: 23px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: #4fd5c5;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            color: #aebbc9;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ================= PAGE ================= */
+
+        .provenance-page {
+            min-height: calc(100vh - 80px);
+            padding: 70px 7%;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            margin-bottom: 35px;
+        }
+
+        .eyebrow {
+            color: #8c83e8;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        .header h1 {
+            font-size: 54px;
+            letter-spacing: -2px;
+            margin-bottom: 18px;
+        }
+
+        .header p {
+            max-width: 680px;
+            color: #9ba9b8;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        /* ================= SEARCH BOX ================= */
+
+        .search-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 14px 20px;
+            background: #101a24;
+            border: 1px solid #263644;
+            border-radius: 9px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #4fd5c5;
+        }
+
+        /* ================= VERIFICATION CARD ================= */
+
+        .verification-card {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            padding: 28px;
+            margin-bottom: 20px;
+            background: #101a24;
+            border: 1px solid #315954;
+            border-radius: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .verification-icon {
+            width: 62px;
+            height: 62px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #153530;
+            border: 1px solid #4fd5c5;
+            color: #4fd5c5;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .verification-text {
+            flex: 1;
+        }
+
+        .verification-label {
+            color: #4fd5c5;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 7px;
+        }
+
+        .verification-text h2 {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .verification-text p {
+            color: #8494a4;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .verified {
+            padding: 8px 12px;
+            border-radius: 7px;
+            border: 1px solid #315954;
+            color: #4fd5c5;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* ================= PROVENANCE GRID ================= */
+
+        .provenance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .provenance-card {
+            padding: 28px;
+            background: #101a24;
+            border: 1px solid #263644;
+            border-radius: 18px;
+        }
+
+        .card-label {
+            color: #8c83e8;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 9px;
+        }
+
+        .provenance-card h3 {
+            font-size: 21px;
+            margin-bottom: 20px;
+        }
+
+        /* ================= DATA ROW ================= */
+
+        .data-row {
+            padding: 15px 0;
+            border-top: 1px solid #24323e;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .data-row span {
+            color: #8997a5;
+        }
+
+        .data-row strong {
+            color: #d8e0e7;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .positive {
+            color: #4fd5c5 !important;
+        }
+
+        .warning {
+            color: #f5b942 !important;
+        }
+
+        .negative {
+            color: #ff5c6c !important;
+        }
+
+        /* ================= HASH ================= */
+
+        .hash-box {
+            padding: 16px;
+            margin-top: 18px;
+            background: #0b131b;
+            border: 1px solid #263644;
+            border-radius: 10px;
+        }
+
+        .hash-label {
+            color: #71808f;
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .hash {
+            color: #aebbc9;
+            font-family: monospace;
+            font-size: 11px;
+            line-height: 1.6;
+            word-break: break-all;
+        }
+
+        /* ================= TIMELINE ================= */
+
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            padding-bottom: 25px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #8c83e8;
+            border: 2px solid #101a24;
+            box-shadow: 0 0 0 1px #8c83e8;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 10px;
+            top: 18px;
+            width: 1px;
+            height: calc(100% - 10px);
+            background: #34404d;
+        }
+
+        .timeline-item strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .timeline-item span {
+            color: #7f8d9b;
+            font-size: 11px;
+        }
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 25px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .primary {
+            border: none;
+            background: #43d6c4;
+            color: #071017;
+        }
+
+        .primary:hover {
+            opacity: 0.9;
+        }
+
+        .secondary {
+            background: transparent;
+            border: 1px solid #33424f;
+            color: #dce5ee;
+        }
+
+        .secondary:hover {
+            border-color: #4fd5c5;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+            nav ul {
+                display: none;
+            }
+
+            .provenance-page {
+                padding: 50px 6%;
+            }
+
+            .header h1 {
+                font-size: 45px;
+            }
+
+            .provenance-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .verification-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .verified {
+                align-self: flex-start;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .search-container {
+                flex-direction: column;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVIGATION ================= -->
+    <nav>
+        <div class="logo">
+            <div class="logo-box">V</div>
+            Veri<span>Trace</span>
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="verify.html">Verify</a></li>
+            <li><a href="provenance.html">Provenance</a></li>
+        </ul>
+    </nav>
+
+    <!-- ================= PROVENANCE PAGE ================= -->
+    <main class="provenance-page">
+        <div class="container">
+
+            <!-- HEADER -->
+            <div class="header">
+                <div class="eyebrow">MEDIA PROVENANCE</div>
+                <h1>Trace where it came from.</h1>
+                <p>
+                    Explore the cryptographic evidence, source information, and verification history associated with the analyzed media.
+                </p>
+            </div>
+
+            <!-- SEARCH BAR -->
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Enter Content ID (e.g. content_18cfce081d)...">
+                <button class="primary" onclick="handleSearch()">Lookup Record</button>
+            </div>
+
+            <!-- ================= VERIFICATION STATUS ================= -->
+            <div class="verification-card" id="verificationCard">
+                <div class="verification-icon" id="vIcon">✓</div>
+
+                <div class="verification-text">
+                    <div class="verification-label" id="vLabel">PROVENANCE STATUS</div>
+                    <h2 id="vTitle">Select or enter a Content ID</h2>
+                    <p id="vDesc">Provide a Content ID above or perform an upload on the Verify page to view detailed provenance records.</p>
+                </div>
+
+                <div class="verified" id="vBadge">NO DATA</div>
+            </div>
+
+            <!-- ================= PROVENANCE DETAILS ================= -->
+            <div class="provenance-grid">
+
+                <!-- CRYPTOGRAPHIC INFORMATION -->
+                <div class="provenance-card">
+                    <div class="card-label">CRYPTOGRAPHIC RECORD</div>
+                    <h3>Content fingerprint</h3>
+
+                    <div class="data-row">
+                        <span>Algorithm</span>
+                        <strong id="mAlgo">SHA-256</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Signature</span>
+                        <strong id="mSig" class="positive">--</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Registry</span>
+                        <strong id="mRegistry">VeriTrace Ledger</strong>
+                    </div>
+
+                    <div class="hash-box">
+                        <div class="hash-label">CONTENT HASH</div>
+                        <div class="hash" id="mHash">--</div>
+                    </div>
+                </div>
+
+                <!-- SOURCE INFORMATION -->
+                <div class="provenance-card">
+                    <div class="card-label">SOURCE INFORMATION</div>
+                    <h3>Media history</h3>
+
+                    <div class="data-row">
+                        <span>Record status</span>
+                        <strong id="mStatus" class="positive">--</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Origin record</span>
+                        <strong id="mOrigin">--</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Integrity</span>
+                        <strong id="mIntegrity" class="positive">--</strong>
+                    </div>
+
+                    <div class="data-row">
+                        <span>Verification</span>
+                        <strong id="mVerification">--</strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================= TIMELINE ================= -->
+            <div class="provenance-card" style="margin-top:20px;">
+                <div class="card-label">PROVENANCE TIMELINE</div>
+                <h3>Verification history</h3>
+
+                <div class="timeline" id="timelineContainer">
+                    <div class="timeline-item">
+                        <strong>Awaiting Content Query</strong>
+                        <span>No provenance timeline loaded yet.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ACTIONS ================= -->
+            <div class="actions">
+                <button class="primary" onclick="window.location.href='verify.html'">
+                    Verify Another File
+                </button>
+
+                <button class="secondary" onclick="window.location.href='index.html'">
+                    Back to Home
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ================= JAVASCRIPT INTEGRATION ================= -->
+    <script>
+        const BASE = ""; // Same origin as FastAPI backend
+
+        const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c =>
+            ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+        function handleSearch() {
+            const val = document.getElementById("searchInput").value.trim();
+            if (val) {
+                window.location.href = `provenance.html?content_id=${encodeURIComponent(val)}`;
+            }
+        }
+
+        async function loadProvenance() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const contentId = urlParams.get("content_id");
+
+            if (!contentId) return;
+
+            document.getElementById("searchInput").value = contentId;
+            document.getElementById("vTitle").textContent = "Fetching provenance record...";
+
+            try {
+                const res = await fetch(`${BASE}/provenance/${encodeURIComponent(contentId)}`);
+                if (!res.ok) {
+                    throw new Error("No provenance record found for this Content ID.");
+                }
+                const data = await res.json();
+                renderProvenance(data, contentId);
+            } catch (err) {
+                console.error(err);
+                renderNotFound(err.message, contentId);
+            }
+        }
+
+        function renderProvenance(data, contentId) {
+            const isVerified = data.blockchain_verified;
+
+            // Card Banner
+            document.getElementById("vIcon").textContent = isVerified ? "✓" : "!";
+            document.getElementById("vIcon").style.color = isVerified ? "#4fd5c5" : "#f5b942";
+            document.getElementById("vIcon").style.borderColor = isVerified ? "#4fd5c5" : "#f5b942";
+
+            document.getElementById("vTitle").textContent = isVerified
+                ? "Source information cryptographically verified"
+                : "Unregistered / Incomplete provenance";
+
+            document.getElementById("vDesc").textContent = isVerified
+                ? "The media hash and signature match an authentic entry in the VeriTrace registry."
+                : "No matching cryptographic origin certificate was found on chain for this file.";
+
+            const badge = document.getElementById("vBadge");
+            badge.textContent = isVerified ? "VERIFIED" : "UNVERIFIED";
+            badge.style.color = isVerified ? "#4fd5c5" : "#f5b942";
+            badge.style.borderColor = isVerified ? "#315954" : "#695125";
+
+            // Cryptographic Record
+            document.getElementById("mSig").textContent = isVerified ? "Valid C2PA" : "Unsigned";
+            document.getElementById("mSig").className = isVerified ? "positive" : "warning";
+            document.getElementById("mHash").textContent = esc(data.hash || contentId);
+
+            // Source Info
+            document.getElementById("mStatus").textContent = isVerified ? "Available" : "Not Found";
+            document.getElementById("mStatus").className = isVerified ? "positive" : "warning";
+
+            document.getElementById("mOrigin").textContent = esc(data.origin || (isVerified ? "Registered" : "Unknown"));
+            
+            document.getElementById("mIntegrity").textContent = isVerified ? "Consistent" : "Unverified";
+            document.getElementById("mIntegrity").className = isVerified ? "positive" : "warning";
+
+            document.getElementById("mVerification").textContent = "Completed";
+
+            // Timeline
+            const timelineContainer = document.getElementById("timelineContainer");
+            const timelineEvents = data.timeline || [
+                { event: "Media Fingerprint Generated", detail: "Content hash created for verification", timestamp: data.timestamp },
+                { event: "Registry Lookup Performed", detail: "Checked against decentralized ledger", timestamp: null },
+                { event: "Verification Completed", detail: isVerified ? "Valid record confirmed" : "No signature found", timestamp: null }
+            ];
+
+            timelineContainer.innerHTML = timelineEvents.map(item => `
+                <div class="timeline-item">
+                    <strong>${esc(item.event || item.title || "Event")}</strong>
+                    <span>${esc(item.detail || item.description || "")} ${item.timestamp ? `(${esc(item.timestamp)})` : ""}</span>
+                </div>
+            `).join("");
+        }
+
+        function renderNotFound(errMsg, contentId) {
+            document.getElementById("vIcon").textContent = "✕";
+            document.getElementById("vIcon").style.color = "#ff5c6c";
+            document.getElementById("vIcon").style.borderColor = "#ff5c6c";
+
+            document.getElementById("vTitle").textContent = "Record Not Found";
+            document.getElementById("vDesc").textContent = errMsg;
+
+            const badge = document.getElementById("vBadge");
+            badge.textContent = "NOT FOUND";
+            badge.style.color = "#ff5c6c";
+            badge.style.borderColor = "#6e2a32";
+
+            document.getElementById("mHash").textContent = esc(contentId);
+            document.getElementById("mSig").textContent = "None";
+            document.getElementById("mSig").className = "negative";
+
+            document.getElementById("mStatus").textContent = "Missing";
+            document.getElementById("mStatus").className = "negative";
+            document.getElementById("mOrigin").textContent = "Unknown";
+            document.getElementById("mIntegrity").textContent = "Unverified";
+            document.getElementById("mIntegrity").className = "negative";
+            document.getElementById("mVerification").textContent = "Failed";
+
+            document.getElementById("timelineContainer").innerHTML = `
+                <div class="timeline-item">
+                    <strong>Lookup Attempted</strong>
+                    <span>No record exists for Content ID: ${esc(contentId)}</span>
+                </div>
+            `;
+        }
+
+        window.addEventListener("DOMContentLoaded", loadProvenance);
+    </script>
+</body>
+
+</html>

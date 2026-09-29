@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VeriTrace — Media Verification</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #081018;
+            color: #f5f7fa;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            border-bottom: 1px solid #1c2933;
+            background: #081018;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .logo-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #42d6c4, #7775ed);
+            color: #071017;
+            font-size: 23px;
+            font-weight: 900;
+        }
+
+        .logo span {
+            color: #4fd5c5;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+        }
+
+        nav a {
+            color: #aebbc9;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ================= HOME ================= */
+
+        .hero {
+            min-height: calc(100vh - 80px);
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 70px;
+            align-items: center;
+            padding: 70px 7%;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 9px 15px;
+            border: 1px solid #276d69;
+            border-radius: 30px;
+            color: #4fd5c5;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: clamp(52px, 6vw, 82px);
+            line-height: 0.98;
+            letter-spacing: -4px;
+            margin-bottom: 25px;
+        }
+
+        h1 .gradient {
+            background: linear-gradient(90deg, #4fd5c5, #62b9ee, #8980ed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            max-width: 600px;
+            color: #9ba9b8;
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            padding: 15px 23px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .primary {
+            background: #43d6c4;
+            color: #071017;
+        }
+
+        .primary:hover {
+            opacity: 0.9;
+        }
+
+        .secondary {
+            background: transparent;
+            color: #dce5ee;
+            border: 1px solid #33424f;
+        }
+
+        .secondary:hover {
+            border-color: #4fd5c5;
+        }
+
+        /* ================= QUICK SEARCH ================= */
+
+        .quick-lookup {
+            margin-top: 35px;
+            padding: 20px;
+            background: #101a24;
+            border: 1px solid #263644;
+            border-radius: 14px;
+            max-width: 580px;
+        }
+
+        .quick-lookup-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #8c83e8;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .lookup-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .lookup-box input {
+            flex: 1;
+            padding: 12px 16px;
+            background: #091119;
+            border: 1px solid #283745;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .lookup-box input:focus {
+            border-color: #4fd5c5;
+        }
+
+        .lookup-box button {
+            padding: 12px 18px;
+            font-size: 13px;
+        }
+
+        /* ================= RIGHT CARD ================= */
+
+        .trust-card {
+            background: #101a24;
+            border: 1px solid #263644;
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        .trust-icon {
+            width: 72px;
+            height: 72px;
+            margin-bottom: 22px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #192a38;
+            border: 1px solid #286c70;
+            font-size: 32px;
+            color: #4fd5c5;
+        }
+
+        .trust-card h2 {
+            font-size: 27px;
+            margin-bottom: 10px;
+        }
+
+        .trust-card>p {
+            color: #9aa9b8;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .feature {
+            padding: 17px;
+            margin-top: 11px;
+            background: #17222e;
+            border: 1px solid #283745;
+            border-radius: 14px;
+        }
+
+        .feature strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .feature small {
+            color: #8494a4;
+        }
+
+        /* ================= SIMPLE FEATURES ================= */
+
+        .features {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .feature-box {
+            padding: 20px;
+            border: 1px solid #263542;
+            background: #0d151e;
+            border-radius: 15px;
+        }
+
+        .feature-box h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .feature-box p {
+            color: #8393a3;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ================= FAST DROP WIDGET ================= */
+
+        .fast-drop {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #286c70;
+            border-radius: 14px;
+            background: #0d1720;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .fast-drop:hover {
+            border-color: #4fd5c5;
+            background: #101c27;
+        }
+
+        .fast-drop p {
+            font-size: 13px;
+            color: #8494a4;
+        }
+
+        .fast-drop strong {
+            color: #4fd5c5;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 50px 6%;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            h1 {
+                font-size: 55px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            h1 {
+                font-size: 45px;
+                letter-spacing: -2px;
+            }
+
+            .trust-card {
+                padding: 28px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .lookup-box {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVIGATION ================= -->
+
+    <nav>
+
+        <div class="logo" onclick="window.location.href='index.html'">
+
+            <div class="logo-box">
+                V
+            </div>
+
+            Veri<span>Trace</span>
+
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="index.html">
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="verify.html">
+                    Verify
+                </a>
+            </li>
+
+            <li>
+                <a href="provenance.html">
+                    Provenance
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+
+    <!-- ================= HOME ================= -->
+
+    <main class="hero">
+
+        <!-- LEFT SIDE -->
+
+        <section>
+
+            <div class="tag">
+                AI + BLOCKCHAIN
+            </div>
+
+
+            <h1>
+
+                Trust what you see.
+
+                <br>
+
+                <span class="gradient">
+                    Verify where it came from.
+                </span>
+
+            </h1>
+
+
+            <p class="description">
+
+                Verify digital media using AI-powered
+                analysis and blockchain-backed provenance.
+
+            </p>
+
+
+            <div class="buttons">
+
+                <button
+                    class="primary"
+                    onclick="window.location.href='verify.html'">
+
+                    Verify Media →
+
+                </button>
+
+
+                <button
+                    class="secondary"
+                    onclick="window.location.href='provenance.html'">
+
+                    Explore Provenance
+
+                </button>
+
+            </div>
+
+            <!-- QUICK LOOKUP WIDGET -->
+            <div class="quick-lookup">
+                <span class="quick-lookup-title">QUICK PROVENANCE LOOKUP</span>
+                <div class="lookup-box">
+                    <input type="text" id="homeContentIdInput" placeholder="Enter Content ID (e.g., content_18cfce081d)...">
+                    <button class="primary" onclick="quickLookup()">Lookup</button>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT SIDE -->
+
+        <section class="trust-card">
+
+            <div class="trust-icon">
+                ◇
+            </div>
+
+
+            <h2>
+                Digital Trust
+            </h2>
+
+
+            <p>
+                Analyze content and trace its origin
+                through two independent verification layers.
+            </p>
+
+
+            <div class="feature">
+
+                <strong>
+                    ✦ AI Analysis
+                </strong>
+
+                <small>
+                    Detect synthetic or manipulated content
+                </small>
+
+            </div>
+
+
+            <div class="feature">
+
+                <strong>
+                    ⌘ Provenance
+                </strong>
+
+                <small>
+                    Trace the origin and history of media
+                </small>
+
+            </div>
+
+            <!-- FAST VERIFY DROPZONE -->
+            <div class="fast-drop" id="fastDropZone" onclick="document.getElementById('fastFileInput').click()">
+                <p>Quick Analyze: <strong>Drop file here</strong> or click to browse</p>
+                <input type="file" id="fastFileInput" style="display:none" onchange="handleFastUpload(this.files[0])">
+            </div>
+
+        </section>
+
+
+        <!-- THREE SMALL FEATURES -->
+
+        <section class="features">
+
+            <div class="feature-box">
+
+                <h3>
+                    AI Detection
+                </h3>
+
+                <p>
+                    Analyze media for synthetic-content signals.
+                </p>
+
+            </div>
+
+
+            <div class="feature-box">
+
+                <h3>
+                    Provenance
+                </h3>
+
+                <p>
+                    Trace the origin and history of digital content.
+                </p>
+
+            </div>
+
+
+            <div class="feature-box">
+
+                <h3>
+                    Verification
+                </h3>
+
+                <p>
+                    Combine evidence into one verification result.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ================= JAVASCRIPT INTEGRATION ================= -->
+    <script>
+        const BASE = ""; // Same origin as FastAPI backend
+
+        function quickLookup() {
+            const input = document.getElementById("homeContentIdInput").value.trim();
+            if (input) {
+                window.location.href = `provenance.html?content_id=${encodeURIComponent(input)}`;
+            }
+        }
+
+        // Enter key listener for quick lookup
+        document.getElementById("homeContentIdInput").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") quickLookup();
+        });
+
+        // Fast upload drag and drop handlers
+        const fastDropZone = document.getElementById("fastDropZone");
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fastDropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                fastDropZone.style.borderColor = "#4fd5c5";
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fastDropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                fastDropZone.style.borderColor = "#286c70";
+            }, false);
+        });
+
+        fastDropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files && files[0]) {
+                handleFastUpload(files[0]);
+            }
+        });
+
+        async function handleFastUpload(file) {
+            if (!file) return;
+
+            const dropText = fastDropZone.querySelector("p");
+            dropText.innerHTML = "Uploading & Analyzing... <strong>Please wait</strong>";
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const res = await fetch(`${BASE}/upload`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!res.ok) throw new Error("Upload failed.");
+                const data = await res.json();
+
+                if (data.content_id) {
+                    window.location.href = `result.html?content_id=${encodeURIComponent(data.content_id)}`;
+                } else {
+                    throw new Error("Invalid response from server.");
+                }
+            } catch (err) {
+                alert(err.message || "An error occurred during quick upload.");
+                dropText.innerHTML = "Quick Analyze: <strong>Drop file here</strong> or click to browse";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

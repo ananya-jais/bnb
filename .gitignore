@@ -1,6 +1,11 @@
 venv/
 __pycache__/
 *.pyc
+.env
+AI/uploads/
 uploaded_media/
+AI/samples/video/
+AI/video/*.onnx
+node_modules/
 veritrace.db
-node_modules
+veritrace.db

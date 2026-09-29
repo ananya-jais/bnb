@@ -2,4 +2,6 @@ fastapi==0.115.0
 uvicorn[standard]==0.30.6
 python-multipart==0.0.9
 pydantic==2.9.2
-web3==7.4.0
+web3==8.0.0
+imagehash==4.3.1
+Pillow==10.4.0
