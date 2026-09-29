@@ -19,7 +19,7 @@ with open(ABI_PATH, "r", encoding="utf-8") as f:
     _abi = _artifact["abi"] if isinstance(_artifact, dict) and "abi" in _artifact else _artifact
 
 w3 = Web3(Web3.HTTPProvider(RPC_URL))
-web3 = w3  # alias for compatibility with code that imports `web3` instead of `w3`
+web3 = w3  # alias for compatibility
 
 contract = w3.eth.contract(
     address=Web3.to_checksum_address(CONTRACT_ADDRESS),
@@ -75,8 +75,6 @@ def _send(fn) -> str:
     return receipt.transactionHash.hex()
 
 
-# ---- writes ----
-
 def register_on_chain(content_id: str, sha256: str, phash, creator: str) -> str:
     return _send(contract.functions.registerContent(
         content_id, sha256, phash or "", creator, "", ""
@@ -89,8 +87,6 @@ def add_edit_on_chain(content_id: str, sha256: str, phash, creator: str,
         content_id, sha256, phash or "", creator, parent_id, edit_type
     ))
 
-
-# ---- reads ----
 
 def get_history(content_id: str) -> list:
     raw = contract.functions.getProvenance(content_id).call()
